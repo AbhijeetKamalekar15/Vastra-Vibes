@@ -1,54 +1,93 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import {
+  Cat,
+  Layers2,
+  LayoutDashboard,
+  LibraryBig,
+  LogOut,
+  PackageOpen,
+  ShoppingCart,
+  Star,
+  User,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export default function Sidebar(){
-    const menuList = [
-        {
-            name: "Dashboard",
-            link: "/admin",
-        },
-        {
-            name: "Products",
-            link: "/admin/products",
-        },
-        {
-            name: "Categories",
-            link: "/admin/categories",
-        },
-        {
-            name: "Brands",
-            link: "/admin/brands",
-        },
-        {
-            name: "Orders",
-            link: "/admin/orders",
-        },
-        {
-            name: "Customers",
-            link: "/admin/customers",
-        },
-        {
-            name: "Reviews",
-            link: "/admin/reviews",
-        },
-        {
-            name: "Collections",
-            link: "/admin/collections",
-        },
-    ]
-    return (
-        <section className="flex flex-col gap-3 items-center bg-white border-r px-5 py-3 h-screen overflow-hidden md:w-[260px]">
-            <img className="h-10" src="logo.svg" alt="logo" />
-            <ul className="flex-1 flex flex-col gap-3">
-                {menuList?.map((item)=>{
-                    return (
-                        <Link href={item?.link} key={item?.link}>
-                            <li>{item?.name}</li>
-                        </Link>
-                    )
-                })}
-            </ul>
-        </section>
-    )
+export default function Sidebar() {
+  const menuList = [
+    {
+      name: "Dashboard",
+      link: "/admin",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+    },
+    {
+      name: "Products",
+      link: "/admin/products",
+      icon: <PackageOpen className="h-5 w-5" />,
+    },
+    {
+      name: "Categories",
+      link: "/admin/categories",
+      icon: <Layers2 className="h-5 w-5" />,
+    },
+    {
+      name: "Brands",
+      link: "/admin/brands",
+      icon: <Cat className="h-5 w-5" />,
+    },
+    {
+      name: "Orders",
+      link: "/admin/orders",
+      icon: <ShoppingCart className="h-5 w-5" />,
+    },
+    {
+      name: "Customers",
+      link: "/admin/customers",
+      icon: <User className="h-5 w-5" />,
+    },
+    {
+      name: "Reviews",
+      link: "/admin/reviews",
+      icon: <Star className="h-5 w-5" />,
+    },
+    {
+      name: "Collections",
+      link: "/admin/collections",
+      icon: <LibraryBig className="h-5 w-5" />,
+    },
+  ];
+  return (
+    <section className="flex flex-col gap-7 bg-white border-r px-5 py-3 h-screen overflow-hidden w-[260px]">
+      <div className="flex justify-center">
+        <img className="h-10" src="logo.svg" alt="logo" />
+      </div>
+      <ul className="flex-1 h-full overflow-y-auto flex flex-col gap-4">
+        {menuList?.map((item, key) => {
+          return <Tab item={item} key={key} />;
+        })}
+      </ul>
+      <div className="flex justify-center">
+        <button className="flex gap-2 items-center px-3 py-2 hover:bg-indigo-100 rounded-xl w-full justify-center ease-soft-spring duration-400 transition-all">
+          <LogOut className="h-5 w-5" /> Logout
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function Tab({ item }) {
+  const pathname = usePathname();
+  const isSelected = pathname === item?.link;
+  return (
+    <Link href={item?.link} key={item?.link}>
+      <li
+        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold ease-soft-spring transition-all duration-300
+        ${isSelected ? "bg-[#879fff] text-white" : "bg-white text-black"}
+        `}
+      >
+        {item?.icon} {item?.name}
+      </li>
+    </Link>
+  );
 }
