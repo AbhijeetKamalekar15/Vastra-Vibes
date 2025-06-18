@@ -7,12 +7,17 @@ import {
   LibraryBig,
   LogOut,
   PackageOpen,
+  ShieldCheck,
   ShoppingCart,
   Star,
   User,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
+import { signOut } from "firebase/auth";
+import {auth} from "../../../lib/firestore/firebase";
+
 
 export default function Sidebar() {
   const menuList = [
@@ -56,6 +61,11 @@ export default function Sidebar() {
       link: "/admin/collections",
       icon: <LibraryBig className="h-5 w-5" />,
     },
+    {
+      name: "Admins",
+      link: "/admin/admins",
+      icon: <ShieldCheck className="h-5 w-5" />,
+    },
   ];
   return (
     <section className="flex flex-col gap-7 bg-white border-r px-5 py-3 h-screen overflow-hidden w-[260px]">
@@ -68,7 +78,19 @@ export default function Sidebar() {
         })}
       </ul>
       <div className="flex justify-center">
-        <button className="flex gap-2 items-center px-3 py-2 hover:bg-indigo-100 rounded-xl w-full justify-center ease-soft-spring duration-400 transition-all">
+        <button
+        onClick={async ()=>{
+          try {
+            await toast.promise(signOut(auth), {
+              error: (e) => e?.message,
+              loading: "Loading...",
+              success: "Successfully Logged Out",
+
+            });
+          } catch (error) {
+              toast.error(error?.message);
+          }
+        }} className="flex gap-2 items-center px-3 py-2 hover:bg-indigo-100 rounded-xl w-full justify-center ease-soft-spring duration-400 transition-all">
           <LogOut className="h-5 w-5" /> Logout
         </button>
       </div>
