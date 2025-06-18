@@ -1,14 +1,15 @@
 "use client";
 
-import { useCategories } from "../../../../lib/firestore/categories/read";
+import { useBrands } from "../../../../lib/firestore/brands/read";
 import {Button} from "../../../../components/ui/button"
 import { Edit2, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { deleteCategory } from "../../../../lib/firestore/categories/write";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { deleteBrand } from "../../../../lib/firestore/brands/write";
 export default function ListView() {
-  const { data: categories, error, isLoading } = useCategories();
+  const { data: brands, error, isLoading } = useBrands();
   if (isLoading) {
     return <div>Loading....</div>;
   }
@@ -17,7 +18,7 @@ export default function ListView() {
   }
   return (
     <div className="flex-1 flex flex-col gap-3 md:pr-5 md:px-0 px-5 rounded-xl ">
-      <h1 className="text-xl">Categories</h1>
+      <h1 className="text-xl">Brands</h1>
       <table className="border-separate border-spacing-y-3">
         <thead>
           <tr>
@@ -28,7 +29,7 @@ export default function ListView() {
           </tr>
         </thead>
         <tbody>
-          {categories?.map((item, index) => {
+          {brands?.map((item, index) => {
             return (
               <Row index={index} item={item} key={item?.id ?? index} />
             );
@@ -47,7 +48,7 @@ function Row({ item, index }) {
     if(!confirm("Are you sure?")) return;
     setIsDeleting(true);
     try {
-      await deleteCategory({ id: item?.id });
+      await deleteBrand({ id: item?.id });
       toast.success("Successfully Deleted");
     } catch (error) {
       toast.error(error?.message);
@@ -56,7 +57,7 @@ function Row({ item, index }) {
   };
 
   const handleUpdate = () => {
-    router.push(`/admin/categories?id=${item?.id}`);
+    router.push(`/admin/brands?id=${item?.id}`);
 
   }
 
