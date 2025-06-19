@@ -120,3 +120,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* In your globals.css or a dedicated Tiptap CSS file */
+
+/* Basic styling for the editor content area */
+/* .tiptap-editor class is applied to EditorContent via editorProps */
+.tiptap-editor {
+  min-height: 150px; /* Adjust as needed */
+  /* Remove default outline when focused */
+  outline: none;
+}
+
+/* Ensure the prose class applies well within your editor */
+/* Tailwind's prose plugin styles the content within. */
+/* If you need to override prose defaults or add specific editor styles: */
+
+/* Example: Basic styles for list items if prose doesn't apply enough margin */
+.tiptap-editor ul,
+.tiptap-editor ol {
+  padding-left: 1.25rem; /* Equivalent to ml-5 or ml-6 */
+  margin-bottom: 0.75rem; /* Space after list */
+}
+
+/* Style for toolbar buttons */
+.toolbar-tiptap button {
+  /* Basic button styling */
+  min-width: 32px; /* Ensure buttons have a minimum size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbar-tiptap select {
+  cursor: pointer;
+}
+
+/* If you use specific fonts, make sure they are available or imported */
