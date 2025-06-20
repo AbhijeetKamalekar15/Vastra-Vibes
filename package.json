@@ -11,6 +11,7 @@
   "dependencies": {
     "@lexical/react": "^0.32.1",
     "@lexical/rich-text": "^0.32.1",
+    "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
     "@tiptap/core": "^2.14.0",

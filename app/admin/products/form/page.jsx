@@ -63,6 +63,7 @@ export default function Page() {
       setFeatureImage(null);
       setImageList([]);
       toast.success("Product is successfully Created!");
+      router.push(`/admin/products`);
     } catch (error) {
       console.log(error?.message);
       toast.error(error?.message);

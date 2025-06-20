@@ -1,5 +1,7 @@
 "use client";
 
+import { auth } from "../../../lib/firestore/firebase";
+import { signOut } from "firebase/auth";
 import {
   Cat,
   Layers2,
@@ -15,9 +17,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { signOut } from "firebase/auth";
-import {auth} from "../../../lib/firestore/firebase";
-
 
 export default function Sidebar() {
   const menuList = [
@@ -68,9 +67,11 @@ export default function Sidebar() {
     },
   ];
   return (
-    <section className="flex flex-col gap-7 bg-white border-r px-5 py-3 h-screen overflow-hidden w-[260px] z-[1000]">
-      <div className="flex justify-center">
-        <img className="h-10" src="logo.svg" alt="logo" />
+    <section className="sticky top-0 flex flex-col gap-10 bg-white border-r px-5 py-3 h-screen overflow-hidden w-[260px] z-50">
+      <div className="flex justify-center py-4">
+        <Link href={`/`}>
+          <img className="h-16" src="/logo.svg" alt="" />
+        </Link>
       </div>
       <ul className="flex-1 h-full overflow-y-auto flex flex-col gap-4">
         {menuList?.map((item, key) => {
@@ -79,18 +80,19 @@ export default function Sidebar() {
       </ul>
       <div className="flex justify-center">
         <button
-        onClick={async ()=>{
-          try {
-            await toast.promise(signOut(auth), {
-              error: (e) => e?.message,
-              loading: "Loading...",
-              success: "Successfully Logged Out",
-
-            });
-          } catch (error) {
+          onClick={async () => {
+            try {
+              await toast.promise(signOut(auth), {
+                error: (e) => e?.message,
+                loading: "Loading...",
+                success: "Successfully Logged out",
+              });
+            } catch (error) {
               toast.error(error?.message);
-          }
-        }} className="flex gap-2 items-center px-3 py-2 hover:bg-indigo-100 rounded-xl w-full justify-center ease-soft-spring duration-400 transition-all">
+            }
+          }}
+          className="flex gap-2 items-center px-3 py-2 hover:bg-indigo-100 rounded-xl w-full justify-center ease-soft-spring duration-400 transition-all"
+        >
           <LogOut className="h-5 w-5" /> Logout
         </button>
       </div>
@@ -102,10 +104,10 @@ function Tab({ item }) {
   const pathname = usePathname();
   const isSelected = pathname === item?.link;
   return (
-    <Link href={item?.link} key={item?.link}>
+    <Link href={item?.link}>
       <li
         className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold ease-soft-spring transition-all duration-300
-        ${isSelected ? "bg-[#879fff] text-white" : "bg-white text-black"}
+        ${isSelected ? "bg-[#879fff] text-white" : "bg-white text-black"} 
         `}
       >
         {item?.icon} {item?.name}
