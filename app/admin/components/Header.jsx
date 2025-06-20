@@ -22,7 +22,14 @@ export default function Header({ toggleSidebar }) {
             <h1 className="text-sm font-semibold">{admin?.name}</h1>
             <h1 className="text-xs text-gray-600">{admin?.email}</h1>
           </div>
-          <Avatar size="sm" src={admin?.imageURL} />
+          <Avatar>
+  <img
+    src={admin?.imageURL || "/placeholder-avatar.png"}
+    alt="avatar"
+    className="h-10 w-10 rounded-full object-cover"
+  />
+</Avatar>
+
         </div>
       </div>
     </section>

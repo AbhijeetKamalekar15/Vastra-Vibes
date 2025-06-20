@@ -17,7 +17,20 @@ export const getCollection = async ({ id }) => {
   }
 };
 
+export const convertDocument = (snap, timestampFields = []) => {
+  const data = snap.data();
+  const converted = { id: snap.id, ...data };
+  timestampFields.forEach((field) => {
+    if (converted[field]?.toDate) {
+      converted[field] = converted[field].toDate().toISOString();
+    }
+  });
+  return converted;
+};
+
 export const getCollections = async () => {
   const list = await getDocs(collection(db, "collections"));
-  return list.docs.map((snap) => snap.data());
+  return list.docs.map((snap) =>
+    convertDocument(snap, ["timestampCreate"])
+  );
 };
