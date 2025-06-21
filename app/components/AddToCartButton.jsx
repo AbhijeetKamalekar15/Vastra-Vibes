@@ -23,10 +23,10 @@ export default function AddToCartButton({ productId, type }) {
     try {
       if (!user?.uid) {
         router.push("/login");
-        throw new Error("Please Logged In First!");
+        throw new Error("Please log in first!");
       }
       if (isAdded) {
-        const newList = data?.carts?.filter((item) => item?.id != productId);
+        const newList = data?.carts?.filter((item) => item?.id !== productId);
         await updateCarts({ list: newList, uid: user?.uid });
       } else {
         await updateCarts({
@@ -34,53 +34,55 @@ export default function AddToCartButton({ productId, type }) {
           uid: user?.uid,
         });
       }
+      toast.success(isAdded ? "Removed from cart" : "Added to cart");
     } catch (error) {
       toast.error(error?.message);
     }
     setIsLoading(false);
   };
 
-  if (type === "cute") {
-    return (
-      <Button
-        disabled={isLoading}
-        onClick={handlClick}
-        variant="bordered"
-        className=""
-      >
-        {!isAdded && "Add To Cart"}
-        {isAdded && "Click To Remove"}
-      </Button>
-    );
-  }
+  const buttonClass =
+    "flex items-center justify-center gap-2 px-5 py-2 rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200";
 
-  if (type === "large") {
-    return (
-      <Button
-        disabled={isLoading}
-        onClick={handlClick}
-        variant="bordered"
-        className=""
-        color="primary"
-        size="sm"
-      >
-        {!isAdded && <AddShoppingCartIcon className="text-xs" />}
-        {isAdded && <ShoppingCartIcon className="text-xs" />}
-        {!isAdded && "Add To Cart"}
-        {isAdded && "Click To Remove"}
-      </Button>
-    );
-  }
+  const bgClass = isAdded
+    ? "bg-[#2c58b9] hover:bg-green-600 active:bg-green-700"
+    : "bg-[#4a7c79] hover:bg-[#3a6663] active:bg-blue-800";
+
+  const loadingClass = isLoading ? "opacity-50 cursor-not-allowed" : "";
 
   return (
     <Button
       disabled={isLoading}
       onClick={handlClick}
-      variant="flat"
-      size="sm"
+      aria-label={isAdded ? "Remove from cart" : "Add to cart"}
+      className={`${buttonClass} ${bgClass} ${loadingClass}`}
     >
-      {!isAdded && <AddShoppingCartIcon className="text-xs" />}
-      {isAdded && <ShoppingCartIcon className="text-xs" />}
+      {isLoading && (
+        <svg
+          className="animate-spin h-4 w-4 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+      )}
+      {!isLoading && !isAdded && <AddShoppingCartIcon className="text-sm" />}
+      {!isLoading && isAdded && <ShoppingCartIcon className="text-sm" />}
+      {!isLoading && !isAdded && <span>Add To Cart</span>}
+      {!isLoading && isAdded && <span>Added!</span>}
     </Button>
   );
 }

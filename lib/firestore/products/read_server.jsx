@@ -19,8 +19,8 @@ export const getFeaturedProducts = async () => {
     return {
       id: snap.id,
       ...data,
-      timestampCreate: data.timestampCreate?.toDate().toISOString(),
-      timestampUpdate: data.timestampUpdate?.toDate().toISOString(),
+      timestampCreate: data.timestampCreate?.toDate().toISOString() ?? null,
+      timestampUpdate: data.timestampUpdate?.toDate().toISOString() ?? null,
     };
   });
 };
@@ -35,8 +35,8 @@ export const getProducts = async () => {
     return {
       id: snap.id,
       ...data,
-      timestampCreate: data.timestampCreate?.toDate().toISOString(),
-      timestampUpdate: data.timestampUpdate?.toDate().toISOString(),
+      timestampCreate: data.timestampCreate?.toDate().toISOString() ?? null,
+      timestampUpdate: data.timestampUpdate?.toDate().toISOString() ?? null,
     };
   });
 };
@@ -45,8 +45,8 @@ export const getProductsByCategory = async ({ categoryId }) => {
   const list = await getDocs(
     query(
       collection(db, "products"),
-      orderBy("timestampCreate", "desc"),
-      where("categoryId", "==", categoryId)
+      where("categoryId", "==", categoryId),
+      orderBy("timestampCreate", "desc")
     )
   );
 
@@ -55,8 +55,8 @@ export const getProductsByCategory = async ({ categoryId }) => {
     return {
       id: snap.id,
       ...data,
-      timestampCreate: data.timestampCreate?.toDate().toISOString(),
-      timestampUpdate: data.timestampUpdate?.toDate().toISOString(),
+      timestampCreate: data.timestampCreate?.toDate().toISOString() ?? null,
+      timestampUpdate: data.timestampUpdate?.toDate().toISOString() ?? null,
     };
   });
 };
@@ -68,8 +68,8 @@ export const getProduct = async ({ id }) => {
     return {
       id: snap.id,
       ...data,
-      timestampCreate: data.timestampCreate?.toDate().toISOString(),
-      timestampUpdate: data.timestampUpdate?.toDate().toISOString(),
+      timestampCreate: data.timestampCreate?.toDate().toISOString() ?? null,
+      timestampUpdate: data.timestampUpdate?.toDate().toISOString() ?? null,
     };
   } else {
     return null;

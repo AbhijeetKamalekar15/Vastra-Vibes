@@ -8,33 +8,31 @@ import MyRating from "./MyRating";
 
 export default function ProductsGridView({ products }) {
   return (
-    <section className="w-full flex justify-center">
-      <div className="flex flex-col gap-6 max-w-[1200px] p-5 md:p-8 w-full">
-        <h1 className="text-center text-xl md:text-2xl font-bold text-gray-900">
-          Products
-        </h1>
+    <section className="w-full flex justify-center bg-[#F0F4F8] py-10 px-4">
+  <div className="flex flex-col gap-6 max-w-[1200px] w-full">
+    <h1 className="text-center font-bold text-2xl text-[#111827]">Products</h1>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {products?.map((item) => {
+        return <ProductCard product={item} key={item?.id} />;
+      })}
+    </div>
+  </div>
+</section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {products?.map((item) => (
-            <ProductCard product={item} key={item?.id} />
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
 export function ProductCard({ product }) {
   return (
-    <div className="flex flex-col gap-4 border border-gray-200 p-4 rounded-xl shadow-sm transition-transform duration-300 hover:scale-[1.02] bg-white">
-      {/* Image Section */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-lg">
+    <div className="flex flex-col gap-3 bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+      {/* Image */}
+      <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg">
         <img
           src={product?.featureImageURL}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
           alt={product?.title}
         />
-        <div className="absolute top-2 right-2 z-10">
+        <div className="absolute top-2 right-2">
           <AuthContextProvider>
             <FavoriteButton productId={product?.id} />
           </AuthContextProvider>
@@ -43,7 +41,7 @@ export function ProductCard({ product }) {
 
       {/* Title */}
       <Link href={`/products/${product?.id}`}>
-        <h1 className="font-semibold text-sm md:text-base text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors duration-200">
+        <h1 className="font-semibold line-clamp-2 text-sm md:text-base text-[#111827] hover:text-[#2A9D8F] transition-colors">
           {product?.title}
         </h1>
       </Link>
@@ -52,37 +50,38 @@ export function ProductCard({ product }) {
       <div>
         <h2 className="text-green-600 text-sm font-semibold">
           ₹ {product?.salePrice}{" "}
-          <span className="line-through text-xs text-gray-500 ml-1">
+          <span className="line-through text-xs text-gray-500">
             ₹ {product?.price}
           </span>
         </h2>
       </div>
 
       {/* Description */}
-      <p className="text-xs text-gray-500 line-clamp-2">{product?.shortDescription}</p>
+      <p className="text-xs text-[#374151] line-clamp-2">
+        {product?.shortDescription}
+      </p>
 
       {/* Ratings */}
       <Suspense>
         <RatingReview product={product} />
       </Suspense>
 
-      {/* Stock Status */}
+      {/* Stock status */}
       {product?.stock <= (product?.orders ?? 0) && (
         <div className="flex">
-          <h3 className="text-red-600 bg-red-100 px-2 py-0.5 rounded-md text-xs font-medium">
+          <h3 className="text-red-500 rounded-lg text-xs font-semibold">
             Out Of Stock
           </h3>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 w-full mt-auto">
+      <div className="flex items-center gap-3 mt-auto">
         <Link href={`/checkout?type=buynow&productId=${product?.id}`} className="flex-1">
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-200">
+          <button className="flex-1 bg-[#2A9D8F] hover:bg-[#21867A] text-white px-4 py-2 rounded-lg text-xs w-full font-semibold transition-all">
             Buy Now
           </button>
         </Link>
-
         <AuthContextProvider>
           <AddToCartButton productId={product?.id} />
         </AuthContextProvider>
@@ -91,14 +90,15 @@ export function ProductCard({ product }) {
   );
 }
 
+
 async function RatingReview({ product }) {
   const counts = await getProductReviewCounts({ productId: product?.id });
-
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-3 items-center">
       <MyRating value={counts?.averageRating ?? 0} />
       <h1 className="text-xs text-gray-400">
-        {counts?.averageRating?.toFixed(1)} ({counts?.totalReviews})
+        <span>{counts?.averageRating?.toFixed(1)}</span> ({counts?.totalReviews}
+        )
       </h1>
     </div>
   );
