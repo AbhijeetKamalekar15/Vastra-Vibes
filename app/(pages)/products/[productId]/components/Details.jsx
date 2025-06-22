@@ -10,27 +10,39 @@ import { Suspense } from "react";
 
 export default function Details({ product }) {
   return (
-    <div className="w-full flex flex-col gap-3">
-      <div className="flex gap-3">
+    <div className="w-full flex flex-col gap-5 p-4 md:p-6 bg-white rounded-2xl border shadow-sm">
+      
+      {/* Category + Brand */}
+      <div className="flex gap-3 flex-wrap">
         <Category categoryId={product?.categoryId} />
         <Brand brandId={product?.brandId} />
       </div>
-      <h1 className="font-semibold text-xl md:text-4xl">{product?.title}</h1>
+
+      {/* Title */}
+      <h1 className="font-bold text-xl md:text-3xl text-gray-900">{product?.title}</h1>
+
+      {/* Rating */}
       <Suspense fallback="Failed To Load">
         <RatingReview product={product} />
       </Suspense>
-      <h2 className="text-gray-600 text-sm line-clamp-3 md:line-clamp-4">
+
+      {/* Short Description */}
+      <p className="text-gray-600 text-sm md:text-base line-clamp-3 md:line-clamp-4">
         {product?.shortDescription}
-      </h2>
-      <h3 className="text-green-500 font-bold text-lg">
+      </p>
+
+      {/* Price */}
+      <h3 className="text-green-600 font-bold text-xl">
         ₹ {product?.salePrice}{" "}
-        <span className="line-through text-gray-700 text-sm">
+        <span className="line-through text-gray-500 text-sm">
           ₹ {product?.price}
         </span>
       </h3>
-      <div className="flex flex-wrap items-center gap-4">
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-3 items-center pt-2">
         <Link href={`/checkout?type=buynow&productId=${product?.id}`}>
-          <button className="bg-black text-white rounded-lg px-4 py-1.5">
+          <button className="bg-[#111827] hover:bg-[#333] text-white text-sm px-5 py-2 rounded-full transition-all">
             Buy Now
           </button>
         </Link>
@@ -41,16 +53,19 @@ export default function Details({ product }) {
           <FavoriteButton productId={product?.id} />
         </AuthContextProvider>
       </div>
+
+      {/* Out Of Stock */}
       {product?.stock <= (product?.orders ?? 0) && (
-        <div className="flex">
+        <div className="pt-2">
           <h3 className="text-red-500 py-1 rounded-lg text-sm font-semibold">
             Out Of Stock
           </h3>
         </div>
       )}
-      <div className="flex flex-col gap-2 py-2">
+
+      {/* Full Description */}
+      <div className="flex flex-col gap-2 py-2 text-sm text-gray-700 leading-relaxed">
         <div
-          className="text-gray-600"
           dangerouslySetInnerHTML={{ __html: product?.description ?? "" }}
         ></div>
       </div>
@@ -62,9 +77,9 @@ async function Category({ categoryId }) {
   const category = await getCategory({ id: categoryId });
   return (
     <Link href={`/categories/${categoryId}`}>
-      <div className="flex items-center bg-gray-300 gap-1 border px-3 py-1 rounded-full">
-        <img className="h-4 rounded-sm" src={category?.imageURL} alt="" />
-        <h4 className="text-xs font-semibold">{category?.name}</h4>
+      <div className="flex items-center bg-gray-100 gap-2 border px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-all cursor-pointer">
+        <img className="h-4 w-4 object-cover rounded-sm" src={category?.imageURL} alt="" />
+        <span className="font-medium">{category?.name}</span>
       </div>
     </Link>
   );
@@ -73,9 +88,9 @@ async function Category({ categoryId }) {
 async function Brand({ brandId }) {
   const brand = await getBrand({ id: brandId });
   return (
-    <div className="flex bg-gray-300 items-center gap-1 border px-3 py-1 rounded-full">
-      <img className="h-4 rounded-sm" src={brand?.imageURL} alt="" />
-      <h4 className="text-xs font-semibold">{brand?.name}</h4>
+    <div className="flex items-center bg-gray-100 gap-2 border px-3 py-1 rounded-full text-sm">
+      <img className="h-4 object-cover rounded-sm" src={brand?.imageURL} alt="" />
+      <span className="font-medium">{brand?.name}</span>
     </div>
   );
 }
@@ -87,11 +102,11 @@ async function RatingReview({ product }) {
 
 function ClientRatingReview({ counts }) {
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-2 items-center">
       <MyRating value={counts?.averageRating ?? 0} />
-      <h1 className="text-sm text-gray-400">
-        <span>{counts?.averageRating?.toFixed(1)}</span> ({counts?.totalReviews})
-      </h1>
+      <p className="text-sm text-gray-500">
+        {counts?.averageRating?.toFixed(1)} ({counts?.totalReviews})
+      </p>
     </div>
   );
 }

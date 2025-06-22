@@ -1,12 +1,13 @@
 import { db } from "../firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 
-export const createUser = async ({ uid, displayName, photoURL }) => {
+export const createUser = async ({ uid, displayName, email, photoURL }) => {
   await setDoc(
     doc(db, `users/${uid}`),
     {
       displayName: displayName,
       photoURL: photoURL ?? "",
+      email: email,
       timestampCreate: Timestamp.now(),
     },
     { merge: true }

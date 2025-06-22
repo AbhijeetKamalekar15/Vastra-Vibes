@@ -11,8 +11,6 @@ import { CheckSquare2Icon, Square } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import QRCode from 'qrcode.react';
-
 
 export default function Checkout({ productList }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,56 +28,44 @@ export default function Checkout({ productList }) {
   }, 0);
 
   const handlePlaceOrder = async () => {
-    if (paymentMode === "upi") {
-  // generate UPI Link and show it
-  const orderId = "ORD" + Math.floor(Math.random() * 1000000); // Example: you can improve this
-  const upiLink = `upi://pay?pa=yourupi@upi&pn=VastraVibes&am=${totalPrice.toFixed(2)}&cu=INR&tn=${orderId}`;
-
-  // you can use a modal or simple toast or page
-  toast((t) => (
-    <div>
-      <h1 className="text-sm font-bold mb-2">Scan & Pay UPI</h1>
-      <a href={upiLink} className="text-blue-600 underline" target="_blank">Click here to pay</a>
-      <div className="mt-2">
-        {/* Show QR code here */}
-        <QRCode value={upiLink} size={180} />
-      </div>
-    </div>
-  ), { duration: 999999 });
-
-  // Store order in DB with status = "pending"
-  await createCheckoutCODAndGetId({
-    uid: user?.uid,
-    products: productList,
-    address: address,
-    orderId: orderId,
-    paymentMode: "upi",
-    status: "pending"
-  });
-
-  toast.success("Waiting for UPI payment...");
-
-  return; // exit after showing UPI link
-}
-
-  };
-
-  useEffect(() => {
-  if (paymentMode === "upi") {
-    const interval = setInterval(async () => {
-      const res = await fetch(`/api/check-payment-status?orderId=${orderId}`);
-      const data = await res.json();
-      if (data.status === "paid") {
-        toast.success("Payment received!");
-        clearInterval(interval);
-        router.push("/order-success");
+    setIsLoading(true);
+    try {
+      if (totalPrice <= 0) {
+        throw new Error("Price should be greater than 0");
       }
-    }, 5000);
+      if (!address?.fullName || !address?.mobile || !address?.addressLine1) {
+        throw new Error("Please Fill All Address Details");
+      }
 
-    return () => clearInterval(interval);
-  }
-}, [paymentMode]);
+      if (!productList || productList?.length === 0) {
+        throw new Error("Product List Is Empty");
+      }
 
+      if (paymentMode === "prepaid") {
+        const url = await createCheckoutAndGetURL({
+          uid: user?.uid,
+          products: productList,
+          address: address,
+        });
+        router.push(url);
+      } else {
+        const checkoutId = await createCheckoutCODAndGetId({
+  uid: user?.uid,
+  products: productList,
+  address: address,
+});
+
+router.push(`/checkout-cod?checkout_id=${checkoutId}&uid=${user?.uid}`);
+
+toast.success("Successfully Placed!");
+confetti();
+
+      }
+    } catch (error) {
+      toast.error(error?.message);
+    }
+    setIsLoading(false);
+  };
 
   return (
     <section className="flex flex-col md:flex-row  gap-3">
@@ -225,33 +211,31 @@ export default function Checkout({ productList }) {
           <div className="flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-xl">Payment Mode</h2>
             <div className="flex items-center gap-3">
-  <button
-    onClick={() => { setPaymentMode("prepaid"); }}
-    className="flex items-center gap-1 text-xs"
-  >
-    {paymentMode === "prepaid" && <CheckSquare2Icon className="text-blue-500" size={13} />}
-    {paymentMode !== "prepaid" && <Square size={13} />}
-    Prepaid
-  </button>
-  
-  <button
-    onClick={() => { setPaymentMode("upi"); }}
-    className="flex items-center gap-1 text-xs"
-  >
-    {paymentMode === "upi" && <CheckSquare2Icon className="text-blue-500" size={13} />}
-    {paymentMode !== "upi" && <Square size={13} />}
-    UPI Pay
-  </button>
-
-  <button
-    onClick={() => { setPaymentMode("cod"); }}
-    className="flex items-center gap-1 text-xs"
-  >
-    {paymentMode === "cod" && <CheckSquare2Icon className="text-blue-500" size={13} />}
-    {paymentMode !== "cod" && <Square size={13} />}
-    Cash On Delivery
-  </button>
-</div>
+              <button
+                onClick={() => {
+                  setPaymentMode("prepaid");
+                }}
+                className="flex items-center gap-1 text-xs"
+              >
+                {paymentMode === "prepaid" && (
+                  <CheckSquare2Icon className="text-blue-500" size={13} />
+                )}
+                {paymentMode === "cod" && <Square size={13} />}
+                Prepaid
+              </button>
+              <button
+                onClick={() => {
+                  setPaymentMode("cod");
+                }}
+                className="flex items-center gap-1 text-xs"
+              >
+                {paymentMode === "prepaid" && <Square size={13} />}
+                {paymentMode === "cod" && (
+                  <CheckSquare2Icon className="text-blue-500" size={13} />
+                )}
+                Cash On Delivery
+              </button>
+            </div>
           </div>
           <div className="flex gap-1 items-center">
             <CheckSquare2Icon className="text-blue-500" size={13} />
@@ -261,7 +245,8 @@ export default function Checkout({ productList }) {
             </h4>
           </div>
           <Button
-            disabled={isLoading}
+            isLoading={isLoading}
+            isDisabled={isLoading}
             onClick={handlePlaceOrder}
             className="bg-black text-white"
           >

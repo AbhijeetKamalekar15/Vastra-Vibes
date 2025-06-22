@@ -27,7 +27,7 @@ export default function Page() {
       {(!orders || orders?.length === 0) && (
         <div className="flex flex-col items-center justify-center gap-3 py-11">
           <div className="flex justify-center">
-            <img className="h-44" src="/svgs/Empty-pana.svg" alt="" />
+            <img className="h-44" src="/Empty-pana.svg" alt="" />
           </div>
           <h1>You have no order</h1>
         </div>

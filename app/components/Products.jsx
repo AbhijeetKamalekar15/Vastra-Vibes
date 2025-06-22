@@ -41,9 +41,9 @@ export function ProductCard({ product }) {
 
       {/* Title */}
       <Link href={`/products/${product?.id}`}>
-        <h1 className="font-semibold line-clamp-2 text-sm md:text-base text-[#111827] hover:text-[#2A9D8F] transition-colors">
+        <p className="font-semibold line-clamp-2 text-xl md:text-base text-[#111827] hover:text-[#2A9D8F] transition-colors">
           {product?.title}
-        </h1>
+        </p>
       </Link>
 
       {/* Price */}
@@ -56,8 +56,8 @@ export function ProductCard({ product }) {
         </h2>
       </div>
 
-      {/* Description */}
-      <p className="text-xs text-gray-600 line-clamp-2">{product?.shortDescription}</p>
+      {/* Description
+      <p className="text-xs text-gray-600 line-clamp-2">{product?.shortDescription}</p> */}
 
       {/* Rating */}
       <Suspense>
