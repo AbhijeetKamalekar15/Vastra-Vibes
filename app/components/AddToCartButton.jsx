@@ -41,8 +41,11 @@ export default function AddToCartButton({ productId, type }) {
     setIsLoading(false);
   };
 
+  // Responsive button classes
   const buttonClass =
-    "flex items-center justify-center gap-2 px-5 py-2 rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200";
+    type === "large"
+      ? "flex items-center justify-center gap-2 px-5 py-2 rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
+      : "flex items-center justify-center gap-2 px-3 py-1 rounded-md text-white font-semibold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 text-[10px] md:text-xs";
 
   const bgClass = isAdded
     ? "bg-[#2c58b9] hover:bg-green-600 active:bg-green-700"
@@ -86,3 +89,4 @@ export default function AddToCartButton({ productId, type }) {
     </Button>
   );
 }
+

@@ -24,9 +24,9 @@ export default function ProductsGridView({ products }) {
 
 export function ProductCard({ product }) {
   return (
-    <div className="flex flex-col gap-3 bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="flex flex-col gap-2 bg-white rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow duration-300">
       {/* Image */}
-      <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg">
+      <div className="relative w-full aspect-[3/4] md:aspect-[4/5] overflow-hidden rounded-lg">
         <img
           src={product?.featureImageURL}
           className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
@@ -57,16 +57,14 @@ export function ProductCard({ product }) {
       </div>
 
       {/* Description */}
-      <p className="text-xs text-[#374151] line-clamp-2">
-        {product?.shortDescription}
-      </p>
+      <p className="text-xs text-gray-600 line-clamp-2">{product?.shortDescription}</p>
 
-      {/* Ratings */}
+      {/* Rating */}
       <Suspense>
         <RatingReview product={product} />
       </Suspense>
 
-      {/* Stock status */}
+      {/* Out of stock */}
       {product?.stock <= (product?.orders ?? 0) && (
         <div className="flex">
           <h3 className="text-red-500 rounded-lg text-xs font-semibold">
@@ -76,19 +74,21 @@ export function ProductCard({ product }) {
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 mt-auto">
-        <Link href={`/checkout?type=buynow&productId=${product?.id}`} className="flex-1">
-          <button className="flex-1 bg-[#2A9D8F] hover:bg-[#21867A] text-white px-4 py-2 rounded-lg text-xs w-full font-semibold transition-all">
+      <div className="flex flex-col md:flex-row gap-2 mt-auto w-full">
+        <Link href={`/checkout?type=buynow&productId=${product?.id}`} className="w-full">
+          <button className=" h-9 w-full bg-[#2A9D8F] hover:bg-[#21867A] text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-all">
             Buy Now
           </button>
         </Link>
         <AuthContextProvider>
-          <AddToCartButton productId={product?.id} />
+          <AddToCartButton productId={product?.id} type="small" />
         </AuthContextProvider>
       </div>
     </div>
   );
 }
+
+
 
 
 async function RatingReview({ product }) {
